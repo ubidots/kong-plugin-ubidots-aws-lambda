@@ -2,7 +2,7 @@ local cjson   = require "cjson"
 local helpers = require "spec.helpers"
 local meta    = require "kong.meta"
 local pl_file = require "pl.file"
-local fixtures = require "spec.fixtures.aws-lambda"
+local fixtures = require "spec.fixtures.ubidots-aws-lambda"
 
 local TEST_CONF = helpers.test_conf
 local server_tokens = meta._SERVER_TOKENS
@@ -20,7 +20,7 @@ for _, strategy in helpers.each_strategy() do
         "routes",
         "services",
         "plugins",
-      }, { "aws-lambda" })
+      }, { "ubidots-aws-lambda" })
 
       local route1 = bp.routes:insert {
         hosts = { "lambda.com" },
@@ -123,8 +123,21 @@ for _, strategy in helpers.each_strategy() do
         service     = null,
       }
 
+      local route19 = bp.routes:insert {
+        hosts       = { "lambda19.test" },
+        protocols   = { "http", "https" },
+        service     = null,
+      }
+
+      local route20 = bp.routes:insert {
+        hosts       = { "lambda20.test" },
+        protocols   = { "http", "https" },
+        service     = null,
+      }
+
+
       bp.plugins:insert {
-        name     = "aws-lambda",
+        name     = "ubidots-aws-lambda",
         route    = { id = route1.id },
         config   = {
           port          = 10001,
@@ -136,7 +149,7 @@ for _, strategy in helpers.each_strategy() do
       }
 
       bp.plugins:insert {
-        name     = "aws-lambda",
+        name     = "ubidots-aws-lambda",
         route    = { id = route1_1.id },
         config   = {
           port          = 10001,
@@ -148,7 +161,7 @@ for _, strategy in helpers.each_strategy() do
       }
 
       bp.plugins:insert {
-        name     = "aws-lambda",
+        name     = "ubidots-aws-lambda",
         route    = { id = route2.id },
         config   = {
           port            = 10001,
@@ -161,7 +174,7 @@ for _, strategy in helpers.each_strategy() do
       }
 
       bp.plugins:insert {
-        name     = "aws-lambda",
+        name     = "ubidots-aws-lambda",
         route    = { id = route3.id },
         config   = {
           port            = 10001,
@@ -174,7 +187,7 @@ for _, strategy in helpers.each_strategy() do
       }
 
       bp.plugins:insert {
-        name     = "aws-lambda",
+        name     = "ubidots-aws-lambda",
         route    = { id = route4.id },
         config   = {
           port          = 10001,
@@ -187,7 +200,7 @@ for _, strategy in helpers.each_strategy() do
       }
 
       bp.plugins:insert {
-        name     = "aws-lambda",
+        name     = "ubidots-aws-lambda",
         route    = { id = route5.id },
         config   = {
           port          = 10001,
@@ -199,7 +212,7 @@ for _, strategy in helpers.each_strategy() do
       }
 
       bp.plugins:insert {
-        name     = "aws-lambda",
+        name     = "ubidots-aws-lambda",
         route    = { id = route6.id },
         config   = {
           port            = 10001,
@@ -212,7 +225,7 @@ for _, strategy in helpers.each_strategy() do
       }
 
       bp.plugins:insert {
-        name     = "aws-lambda",
+        name     = "ubidots-aws-lambda",
         route    = { id = route7.id },
         config   = {
           port            = 10001,
@@ -225,7 +238,7 @@ for _, strategy in helpers.each_strategy() do
       }
 
       bp.plugins:insert {
-        name     = "aws-lambda",
+        name     = "ubidots-aws-lambda",
         route    = { id = route8.id },
         config   = {
           port             = 10001,
@@ -238,7 +251,7 @@ for _, strategy in helpers.each_strategy() do
       }
 
       bp.plugins:insert {
-        name     = "aws-lambda",
+        name     = "ubidots-aws-lambda",
         route    = { id = route9.id },
         config   = {
           port                    = 10001,
@@ -254,7 +267,7 @@ for _, strategy in helpers.each_strategy() do
       }
 
       bp.plugins:insert {
-        name     = "aws-lambda",
+        name     = "ubidots-aws-lambda",
         route    = { id = route10.id },
         config                    = {
           port                    = 10001,
@@ -270,7 +283,7 @@ for _, strategy in helpers.each_strategy() do
       }
 
       bp.plugins:insert {
-        name     = "aws-lambda",
+        name     = "ubidots-aws-lambda",
         route    = { id = route11.id },
         config                 = {
           port                 = 10001,
@@ -283,7 +296,7 @@ for _, strategy in helpers.each_strategy() do
       }
 
       bp.plugins:insert {
-        name     = "aws-lambda",
+        name     = "ubidots-aws-lambda",
         route    = { id = route12.id },
         config                 = {
           port                 = 10001,
@@ -296,7 +309,7 @@ for _, strategy in helpers.each_strategy() do
       }
 
       bp.plugins:insert {
-        name     = "aws-lambda",
+        name     = "ubidots-aws-lambda",
         route    = { id = route13.id },
         config                 = {
           port                 = 10001,
@@ -309,7 +322,7 @@ for _, strategy in helpers.each_strategy() do
       }
 
       bp.plugins:insert {
-        name     = "aws-lambda",
+        name     = "ubidots-aws-lambda",
         route = { id = route14.id },
         config   = {
           port          = 10001,
@@ -321,7 +334,7 @@ for _, strategy in helpers.each_strategy() do
       }
 
       bp.plugins:insert {
-        name     = "aws-lambda",
+        name     = "ubidots-aws-lambda",
         route = { id = route15.id },
         config   = {
           port          = 10001,
@@ -333,7 +346,7 @@ for _, strategy in helpers.each_strategy() do
       }
 
       bp.plugins:insert {
-        name     = "aws-lambda",
+        name     = "ubidots-aws-lambda",
         route    = { id = route16.id },
         config                 = {
           port                 = 10001,
@@ -346,7 +359,7 @@ for _, strategy in helpers.each_strategy() do
       }
 
       bp.plugins:insert {
-        name     = "aws-lambda",
+        name     = "ubidots-aws-lambda",
         route    = { id = route17.id },
         config                 = {
           port                 = 10001,
@@ -359,7 +372,7 @@ for _, strategy in helpers.each_strategy() do
       }
 
       bp.plugins:insert {
-        name     = "aws-lambda",
+        name     = "ubidots-aws-lambda",
         route    = { id = route18.id },
         config                 = {
           port                 = 10001,
@@ -371,15 +384,47 @@ for _, strategy in helpers.each_strategy() do
         }
       }
 
+      bp.plugins:insert {
+        name     = "ubidots-aws-lambda",
+        route    = { id = route19.id },
+        config                 = {
+          port                 = 10001,
+          aws_key              = "mock-key",
+          aws_secret           = "mock-secret",
+          function_name        = "functionWithMultiValueHeadersResponse",
+          is_proxy_integration = true,
+        }
+      }
+
+      bp.plugins:insert {
+        name     = "ubidots-aws-lambda",
+        route    = { id = route20.id },
+        config                 = {
+          port                 = 10001,
+          aws_key              = "mock-key",
+          aws_secret           = "mock-secret",
+          function_name        = "functionEcho",
+          proxy_url            = "http://127.0.0.1:13128",
+          keepalive            = 1,
+        }
+      }
+
+
       fixtures.dns_mock:A({
         name = "lambda18.test",
         address = helpers.mock_upstream_host,
       })
 
+      helpers.setenv("AWS_REGION", "us-east-1")
+
       assert(helpers.start_kong({
         database   = strategy,
-        plugins = "aws-lambda",
+        plugins = "ubidots-aws-lambda",
         nginx_conf = "spec/fixtures/custom_nginx.template",
+
+        -- we don't actually use any stream proxy features in this test suite,
+        -- but this is needed in order to load our forward-proxy stream_mock fixture
+        stream_listen = helpers.get_proxy_ip(false) .. ":19000",
       }, nil, nil, fixtures))
     end)
 
@@ -395,6 +440,7 @@ for _, strategy in helpers.each_strategy() do
 
     lazy_teardown(function()
       helpers.stop_kong()
+      helpers.unsetenv("AWS_REGION", "us-east-1")
     end)
 
     it("invokes a Lambda function with GET", function()
@@ -746,7 +792,7 @@ for _, strategy in helpers.each_strategy() do
 
       helpers.wait_until(function()
         local logs = pl_file.read(TEST_CONF.prefix .. "/" .. TEST_CONF.proxy_error_log)
-        local _, count = logs:gsub([[handler.lua:%d+ %[aws%-lambda%].+lambda%.ab%-cdef%-1%.amazonaws%.com.+name error"]], "")
+        local _, count = logs:gsub([[%[ubidots%-aws%-lambda%].+lambda%.ab%-cdef%-1%.amazonaws%.com.+name error"]], "")
         return count >= 1
       end, 10)
     end)
@@ -966,6 +1012,33 @@ for _, strategy in helpers.each_strategy() do
         assert.res_status(200, res)
         assert.is_string(res.headers.age)
         assert.is_array(res.headers["Access-Control-Allow-Origin"])
+      end)
+
+      it("use ENV value when no region nor host is set", function()
+        local res = assert(proxy_client:send({
+          method  = "GET",
+          path    = "/get?key1=some_value1",
+          headers = {
+            ["Host"] = "lambda19.test"
+          }
+        }))
+        assert.res_status(200, res)
+        assert.is_string(res.headers.age)
+        assert.is_array(res.headers["Access-Control-Allow-Origin"])
+      end)
+
+      it("works with a forward proxy", function()
+        local res = assert(proxy_client:send({
+          method  = "GET",
+          path    = "/get?a=1&b=2",
+          headers = {
+            ["Host"] = "lambda20.test"
+          }
+        }))
+
+        assert.res_status(200, res)
+        local req = assert.response(res).has.jsonbody()
+        assert.equals("https", req.vars.scheme)
       end)
     end)
   end)
