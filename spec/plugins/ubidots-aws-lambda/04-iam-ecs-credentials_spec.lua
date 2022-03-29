@@ -1,41 +1,44 @@
 require "spec.helpers"
 
-describe("[AWS Lambda] iam-ec2", function()
+describe("[AWS Lambda] iam-ecs", function()
 
-  local fetch_ec2, http_responses
+  local fetch_ecs, http_responses, env_vars
+  local old_getenv = os.getenv
 
   before_each(function()
-    package.loaded["kong.plugins.aws-lambda.iam-ec2-credentials"] = nil
+    package.loaded["kong.plugins.ubidots-aws-lambda.iam-ecs-credentials"] = nil
     package.loaded["resty.http"] = nil
     local http = require "resty.http"
     -- mock the http module
     http.new = function()
       return {
         set_timeout = function() end,
-        connect = function()
-          return true
-        end,
-        request = function()
+        request_uri = function()
+          local body = http_responses[1]
+          table.remove(http_responses, 1)
           return {
             status = 200,
-            read_body = function()
-              local body = http_responses[1]
-              table.remove(http_responses, 1)
-              return body
-            end,
+            body = body,
           }
         end,
       }
     end
-    fetch_ec2 = require("kong.plugins.aws-lambda.iam-ec2-credentials").fetchCredentials
+    -- mock os.getenv
+    os.getenv = function(name)  -- luacheck: ignore
+      return (env_vars or {})[name] or old_getenv(name)
+    end
   end)
 
   after_each(function()
+    os.getenv = old_getenv  -- luacheck: ignore
   end)
 
   it("should fetch credentials from metadata service", function()
+    env_vars = {
+      AWS_CONTAINER_CREDENTIALS_RELATIVE_URI = "/just/a/path"
+    }
+
     http_responses = {
-      "EC2_role",
       [[
 {
   "Code" : "Success",
@@ -49,7 +52,9 @@ describe("[AWS Lambda] iam-ec2", function()
 ]]
     }
 
-    local iam_role_credentials, err = fetch_ec2()
+    fetch_ecs = require("kong.plugins.ubidots-aws-lambda.iam-ecs-credentials").fetchCredentials
+
+    local iam_role_credentials, err = fetch_ecs()
 
     assert.is_nil(err)
     assert.equal("the Access Key", iam_role_credentials.access_key)
