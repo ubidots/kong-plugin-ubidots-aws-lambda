@@ -175,7 +175,9 @@ function AWSLambdaHandler:access(conf)
     local body_args = kong.request.get_body()
     upstream_body = kong.table.merge(kong.request.get_query(), body_args)
   end
-
+  if conf.auth_token ~= nil and type(upstream_body) == "table" and upstream_body[1] == nil then
+    upstream_body['_auth_token'] = conf.auth_token
+  end
   local upstream_body_json, err = cjson.encode(upstream_body)
   if not upstream_body_json then
     kong.log.err("could not JSON encode upstream body",

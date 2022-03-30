@@ -86,6 +86,39 @@ return {
           type = "boolean",
           default = true,
         } },
+        { raw_function    = { 
+          type = "boolean", 
+          default  = false,
+        } },
+        { environment     = { 
+          type = "string",  
+          default  = "{}",
+        } },
+        { parameters      = { 
+          type = "string",
+          default  = "{}",
+        } },
+        { auth_token      = { 
+          type = "string",
+          required = false  
+        } },
+        { methods         = {
+              type = "array",
+              default  = { "POST" },
+              elements = {
+                type = "string",
+                one_of = { "HEAD", "GET", "POST", "PATCH", "PUT" }
+              }
+            }
+        },
+        { allowed_origins = {
+              type = "array",
+              default  = {},
+              elements = {
+                type = "string",
+              }
+            }
+        },
       }
     },
   } },
