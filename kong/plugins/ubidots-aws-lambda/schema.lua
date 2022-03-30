@@ -86,21 +86,21 @@ return {
           type = "boolean",
           default = true,
         } },
-        { raw_function    = { 
-          type = "boolean", 
+        { raw_function    = {
+          type = "boolean",
           default  = false,
         } },
-        { environment     = { 
-          type = "string",  
-          default  = "{}",
-        } },
-        { parameters      = { 
+        { environment     = {
           type = "string",
           default  = "{}",
         } },
-        { auth_token      = { 
+        { parameters      = {
           type = "string",
-          required = false  
+          default  = "{}",
+        } },
+        { auth_token      = {
+          type = "string",
+          required = false
         } },
         { methods         = {
               type = "array",
