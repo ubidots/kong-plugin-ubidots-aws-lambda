@@ -122,6 +122,9 @@ local function extract_proxy_response(content)
   }
 end
 
+local function is_dictionary_body(body)
+  return type(body) == "table" and body[1] == nil
+end
 
 local AWSLambdaHandler = {}
 
@@ -175,8 +178,14 @@ function AWSLambdaHandler:access(conf)
     local body_args = kong.request.get_body()
     upstream_body = kong.table.merge(kong.request.get_query(), body_args)
   end
-  if conf.auth_token ~= nil and type(upstream_body) == "table" and upstream_body[1] == nil then
+  if conf.auth_token ~= nil and is_dictionary_body(upstream_body) then
     upstream_body['_auth_token'] = conf.auth_token
+  end
+  if conf.environment ~= nil and is_dictionary_body(upstream_body) then
+    upstream_body['_environment'] = conf.environment
+  end
+  if conf.parameters ~= nil and is_dictionary_body(upstream_body) then
+    upstream_body['_parameters'] = conf.parameters
   end
   local upstream_body_json, err = cjson.encode(upstream_body)
   if not upstream_body_json then
