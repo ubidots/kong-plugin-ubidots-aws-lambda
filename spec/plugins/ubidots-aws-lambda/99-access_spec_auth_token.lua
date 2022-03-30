@@ -227,7 +227,7 @@ for _, strategy in helpers.each_strategy() do
           aws_region      = "us-east-1",
           function_name   = "functionWithUnhandledError",
           invocation_type = "Event",
-          auth_token    = "auth_token",
+          auth_token      = "auth_token",
         },
       }
 
@@ -241,7 +241,7 @@ for _, strategy in helpers.each_strategy() do
           aws_region      = "us-east-1",
           function_name   = "functionWithUnhandledError",
           invocation_type = "DryRun",
-          auth_token    = "auth_token",
+          auth_token      = "auth_token",
         },
       }
 
@@ -255,6 +255,7 @@ for _, strategy in helpers.each_strategy() do
           aws_region       = "us-east-1",
           function_name    = "functionWithUnhandledError",
           unhandled_status = 412,
+          auth_token       = "auth_token",
         },
       }
 
@@ -271,6 +272,7 @@ for _, strategy in helpers.each_strategy() do
           forward_request_uri     = true,
           forward_request_headers = true,
           forward_request_body    = true,
+          auth_token              = "auth_token",
         }
       }
 
@@ -287,6 +289,7 @@ for _, strategy in helpers.each_strategy() do
           forward_request_uri     = false,
           forward_request_headers = true,
           forward_request_body    = true,
+          auth_token              = "auth_token",
         }
       }
 
@@ -300,6 +303,7 @@ for _, strategy in helpers.each_strategy() do
           aws_region           = "us-east-1",
           function_name        = "kongLambdaTest",
           is_proxy_integration = true,
+          auth_token           = "auth_token",
         }
       }
 
@@ -313,6 +317,7 @@ for _, strategy in helpers.each_strategy() do
           aws_region           = "us-east-1",
           function_name        = "functionWithBadJSON",
           is_proxy_integration = true,
+          auth_token           = "auth_token",
         }
       }
 
@@ -326,6 +331,7 @@ for _, strategy in helpers.each_strategy() do
           aws_region           = "us-east-1",
           function_name        = "functionWithNoResponse",
           is_proxy_integration = true,
+          auth_token           = "auth_token",
         }
       }
 
@@ -338,6 +344,7 @@ for _, strategy in helpers.each_strategy() do
           aws_secret    = "mock-secret",
           aws_region    = "us-east-1",
           function_name = "kongLambdaTest",
+          auth_token    = "auth_token",
         },
       }
 
@@ -350,6 +357,7 @@ for _, strategy in helpers.each_strategy() do
           aws_secret    = "mock-secret",
           aws_region    = "ab-cdef-1",
           function_name = "kongLambdaTest",
+          auth_token    = "auth_token",
         },
       }
 
@@ -363,6 +371,7 @@ for _, strategy in helpers.each_strategy() do
           aws_region           = "us-east-1",
           function_name        = "functionWithBase64EncodedResponse",
           is_proxy_integration = true,
+          auth_token           = "auth_token",
         }
       }
 
@@ -376,6 +385,7 @@ for _, strategy in helpers.each_strategy() do
           aws_region           = "us-east-1",
           function_name        = "functionWithMultiValueHeadersResponse",
           is_proxy_integration = true,
+          auth_token           = "auth_token",
         }
       }
 
@@ -389,6 +399,7 @@ for _, strategy in helpers.each_strategy() do
           function_name        = "functionWithMultiValueHeadersResponse",
           host                 = "lambda18.test",
           is_proxy_integration = true,
+          auth_token           = "auth_token",
         }
       }
 
@@ -401,6 +412,7 @@ for _, strategy in helpers.each_strategy() do
           aws_secret           = "mock-secret",
           function_name        = "functionWithMultiValueHeadersResponse",
           is_proxy_integration = true,
+          auth_token           = "auth_token",
         }
       }
 
@@ -414,6 +426,7 @@ for _, strategy in helpers.each_strategy() do
           function_name        = "functionEcho",
           proxy_url            = "http://127.0.0.1:13128",
           keepalive            = 1,
+          auth_token           = "auth_token",
         }
       }
 
@@ -613,6 +626,7 @@ for _, strategy in helpers.each_strategy() do
 
       -- request_body
       assert.equal("some_value", body.request_body_args.key2)
+      assert.equal("auth_token", body._auth_token)
       assert.is_table(body.request_body_args)
     end)
     it("invokes a Lambda function with POST and txt payload, custom header and query parameter", function()
@@ -643,6 +657,7 @@ for _, strategy in helpers.each_strategy() do
 
       -- request_body
       assert.equal("some text", body.request_body)
+      assert.equal("auth_token", body._auth_token)
       assert.is_nil(body.request_body_base64)
       assert.is_table(body.request_body_args)
     end)
@@ -674,6 +689,7 @@ for _, strategy in helpers.each_strategy() do
 
       -- request_body
       assert.equal(ngx.encode_base64('01234'), body.request_body)
+      assert.equal("auth_token", body._auth_token)
       assert.is_true(body.request_body_base64)
       assert.is_table(body.request_body_args)
     end)
@@ -986,6 +1002,7 @@ for _, strategy in helpers.each_strategy() do
         local body = assert.response(res).has.jsonbody()
         assert.is_string(res.headers["x-amzn-RequestId"])
         assert.equal("some_value1", body.key1)
+        assert.equal("auth_token", body._auth_token)
         assert.is_nil(res.headers["X-Amz-Function-Error"])
       end)
 
