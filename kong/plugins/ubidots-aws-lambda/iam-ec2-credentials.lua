@@ -1,5 +1,3 @@
-
-  
 local http  = require "resty.http"
 local json  = require "cjson"
 local parse_date = require("luatz").parse.rfc_3339

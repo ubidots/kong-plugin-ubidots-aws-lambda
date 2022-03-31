@@ -88,6 +88,21 @@ local function validate_custom_response(response)
 end
 
 
+local function extract_raw_function_response(content, status_code)
+  local response_json = cjson.decode(content)
+  if response_json == nil then
+    return {status_code = status_code}
+  end
+  local headers = response_json.headers or {}
+  local body = response_json.body or "{}"
+  headers["Content-Length"] = #body
+  return {
+    status_code = response_json.status_code,
+    body = body,
+    headers = headers
+  }
+end
+
 local function extract_proxy_response(content)
   local serialized_content, err = cjson.decode(content)
   if not serialized_content then
@@ -122,6 +137,9 @@ local function extract_proxy_response(content)
   }
 end
 
+local function is_dictionary_body(body)
+  return type(body) == "table" and body[1] == nil
+end
 
 local AWSLambdaHandler = {}
 
@@ -130,7 +148,9 @@ function AWSLambdaHandler:access(conf)
   local upstream_body = kong.table.new(0, 6)
   local ctx = ngx.ctx
 
-  if conf.awsgateway_compatible then
+  if conf.raw_function then
+    upstream_body = {}
+  elseif conf.awsgateway_compatible then
     upstream_body = aws_serializer(ctx, conf)
 
   elseif conf.forward_request_body or
@@ -175,7 +195,20 @@ function AWSLambdaHandler:access(conf)
     local body_args = kong.request.get_body()
     upstream_body = kong.table.merge(kong.request.get_query(), body_args)
   end
-
+  if conf.auth_token ~= nil and is_dictionary_body(upstream_body) then
+    upstream_body['_auth_token'] = conf.auth_token
+  end
+  if conf.environment ~= nil and is_dictionary_body(upstream_body) then
+    upstream_body['_environment'] = conf.environment
+  end
+  if conf.parameters ~= nil and is_dictionary_body(upstream_body) then
+    upstream_body['_parameters'] = conf.parameters
+  end
+  if conf.raw_function then
+    upstream_body['headers'] = kong.request.get_headers()
+    upstream_body['body'] = request_util.read_request_body(conf.skip_large_bodies)
+    upstream_body['path'] = kong.request.get_path_with_query()
+  end
   local upstream_body_json, err = cjson.encode(upstream_body)
   if not upstream_body_json then
     kong.log.err("could not JSON encode upstream body",
@@ -317,6 +350,13 @@ function AWSLambdaHandler:access(conf)
     headers[VIA_HEADER] = VIA_HEADER_VALUE
   end
 
+  if conf.raw_function then
+    local response_raw_function = extract_raw_function_response(content, status)
+    status = response_raw_function.status_code
+    headers = response_raw_function.headers
+    content = response_raw_function.body
+  end
+  
   return kong.response.exit(status, content, headers)
 end
 
