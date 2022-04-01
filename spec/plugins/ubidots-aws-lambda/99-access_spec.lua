@@ -511,6 +511,59 @@ for _, strategy in helpers.each_strategy() do
       assert.is_string(res.headers["x-amzn-RequestId"])
       assert.equal("some_value_json1", body.key1)
     end)
+    it("invokes a Lambda function with _blocking in json body", function()
+      local res = assert(proxy_client:send {
+        method  = "POST",
+        path    = "/post",
+        headers = {
+          ["Host"]         = "lambda.com",
+          ["Content-Type"] = "application/json"
+        },
+        body = {
+          key1 = "some_value_json1",
+          key2 = "some_value_json2",
+          key3 = "some_value_json3",
+          _blocking = true,
+        }
+      })
+      assert.res_status(200, res)
+      local body = assert.response(res).has.jsonbody()
+      assert.is_string(res.headers["x-amzn-RequestId"])
+      assert.equal("some_value_json1", body.key1)
+    end)
+    it("invokes a Lambda function with not _blocking in queryparams", function()
+      local res = assert(proxy_client:send {
+        method  = "POST",
+        path    = "/post?_blocking=false",
+        headers = {
+          ["Host"]         = "lambda.com",
+          ["Content-Type"] = "application/json"
+        },
+        body = {
+          key1 = "some_value_json1",
+          key2 = "some_value_json2",
+          key3 = "some_value_json3",
+        }
+      })
+      assert.res_status(202, res)
+    end)
+    it("invokes a Lambda function with not _blocking in json body", function()
+      local res = assert(proxy_client:send {
+        method  = "POST",
+        path    = "/post",
+        headers = {
+          ["Host"]         = "lambda.com",
+          ["Content-Type"] = "application/json"
+        },
+        body = {
+          key1 = "some_value_json1",
+          key2 = "some_value_json2",
+          key3 = "some_value_json3",
+          _blocking = false,
+        }
+      })
+      assert.res_status(202, res)
+    end)
     it("passes empty json arrays unmodified", function()
       local res = assert(proxy_client:send {
         method  = "POST",
