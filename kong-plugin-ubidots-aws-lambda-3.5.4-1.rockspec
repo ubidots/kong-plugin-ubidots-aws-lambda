@@ -26,7 +26,6 @@ build = {
     ["kong.plugins.ubidots-aws-lambda.iam-ecs-credentials"]  = "kong/plugins/ubidots-aws-lambda/iam-ecs-credentials.lua",
     ["kong.plugins.ubidots-aws-lambda.schema"]               = "kong/plugins/ubidots-aws-lambda/schema.lua",
     ["kong.plugins.ubidots-aws-lambda.v4"]                   = "kong/plugins/ubidots-aws-lambda/v4.lua",
-    ["kong.plugins.ubidots-aws-lambda.http.connect-better"]  = "kong/plugins/ubidots-aws-lambda/http/connect-better.lua",
     ["kong.plugins.ubidots-aws-lambda.request-util"]         = "kong/plugins/ubidots-aws-lambda/request-util.lua",
   }
 }
