@@ -88,6 +88,16 @@ local function validate_custom_response(response)
 end
 
 
+local function get_blocking_invocation_type(blocking, invocation_type)
+  if blocking == "true" or blocking == true then
+    return "RequestResponse"
+  elseif blocking == "false" or blocking == false then
+    return "Event"
+  else
+    return invocation_type
+  end
+end
+
 local function extract_raw_function_response(content, status_code)
   local response_json = cjson.decode(content)
   if response_json == nil then
@@ -195,6 +205,11 @@ function AWSLambdaHandler:access(conf)
     local body_args = kong.request.get_body()
     upstream_body = kong.table.merge(kong.request.get_query(), body_args)
   end
+  local blocking = nil
+  if is_dictionary_body(upstream_body) then
+    blocking = (upstream_body['_blocking'])
+    upstream_body["_blocking"] = nil
+  end
   if conf.auth_token ~= nil and is_dictionary_body(upstream_body) then
     upstream_body['_auth_token'] = conf.auth_token
   end
@@ -235,7 +250,7 @@ function AWSLambdaHandler:access(conf)
     method = "POST",
     headers = {
       ["X-Amz-Target"] = "invoke",
-      ["X-Amz-Invocation-Type"] = conf.invocation_type,
+      ["X-Amz-Invocation-Type"] = get_blocking_invocation_type(blocking, conf.invocation_type),
       ["X-Amz-Log-Type"] = conf.log_type,
       ["Content-Type"] = "application/x-amz-json-1.1",
       ["Content-Length"] = upstream_body_json and tostring(#upstream_body_json),
