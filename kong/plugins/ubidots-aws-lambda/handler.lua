@@ -371,7 +371,6 @@ function AWSLambdaHandler:access(conf)
     headers = response_raw_function.headers
     content = response_raw_function.body
   end
-  
   return kong.response.exit(status, content, headers)
 end
 

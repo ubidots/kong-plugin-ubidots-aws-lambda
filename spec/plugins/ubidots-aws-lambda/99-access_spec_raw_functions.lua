@@ -1,11 +1,9 @@
 local cjson   = require "cjson"
 local helpers = require "spec.helpers"
-local meta    = require "kong.meta"
 local pl_file = require "pl.file"
 local fixtures = require "spec.fixtures.ubidots-aws-lambda-raw"
 
 local TEST_CONF = helpers.test_conf
-local server_tokens = meta._SERVER_TOKENS
 local null = ngx.null
 
 
@@ -532,7 +530,6 @@ for _, strategy in helpers.each_strategy() do
       assert.is_string(res.headers["X-Kong-Response-Latency"])
       assert.is_string(res.headers["Date"])
     end)
-    
     it("invokes a Lambda function with POST json body", function()
       local expected_body = {
         key1 = "some_value_json1",
@@ -594,7 +591,6 @@ for _, strategy in helpers.each_strategy() do
       assert.is_string(res.headers["X-Kong-Response-Latency"])
       assert.is_string(res.headers["Date"])
     end)
-    
     it("invokes a Lambda function with POST and both querystring and body params", function()
       local res = assert(proxy_client:send {
         method  = "POST",
@@ -624,7 +620,6 @@ for _, strategy in helpers.each_strategy() do
       assert.is_string(res.headers["X-Kong-Response-Latency"])
       assert.is_string(res.headers["Date"])
     end)
-  
     it("invokes a Lambda function with POST and xml payload, custom header and query parameter", function()
       local res = assert(proxy_client:send {
         method  = "POST",
@@ -638,7 +633,6 @@ for _, strategy in helpers.each_strategy() do
       })
       assert.res_status(201, res)
       local body = assert.response(res).has.jsonbody()
-
       assert.equal("x", res.headers["test"])
       assert.equal("value", body.test)
       assert.equal("/post?key1=from_querystring", body.path)
@@ -655,7 +649,6 @@ for _, strategy in helpers.each_strategy() do
       assert.is_string(res.headers["X-Kong-Response-Latency"])
       assert.is_string(res.headers["Date"])
     end)
-    
     it("invokes a Lambda function with POST and json payload, custom header and query parameter", function()
       local res = assert(proxy_client:send {
         method  = "POST",
@@ -683,7 +676,6 @@ for _, strategy in helpers.each_strategy() do
       assert.is_string(res.headers["X-Kong-Response-Latency"])
       assert.is_string(res.headers["Date"])
     end)
-    
     it("invokes a Lambda function with POST and txt payload, custom header and query parameter", function()
       local res = assert(proxy_client:send {
         method  = "POST",
@@ -756,7 +748,6 @@ for _, strategy in helpers.each_strategy() do
       })
       assert.res_status(202, res)
     end)
-    
     it("invokes a Lambda function with POST params and DryRun invocation_type", function()
       local res = assert(proxy_client:send {
         method  = "POST",
@@ -773,7 +764,6 @@ for _, strategy in helpers.each_strategy() do
       })
       assert.res_status(204, res)
     end)
-    
     it("errors on connection timeout", function()
       local res = assert(proxy_client:send {
         method  = "GET",
@@ -807,7 +797,6 @@ for _, strategy in helpers.each_strategy() do
       assert.is_string(res.headers["X-Kong-Response-Latency"])
       assert.is_string(res.headers["Date"])
     end)
-    
     it("invokes a Lambda function with an unhandled function error with Event invocation type", function()
       local res = assert(proxy_client:send {
         method  = "GET",
@@ -818,7 +807,6 @@ for _, strategy in helpers.each_strategy() do
       })
       assert.res_status(202, res)
     end)
-    
     it("invokes a Lambda function with an unhandled function error with DryRun invocation type", function()
       local res = assert(proxy_client:send {
         method  = "GET",
@@ -829,7 +817,6 @@ for _, strategy in helpers.each_strategy() do
       })
       assert.res_status(204, res)
     end)
-    
     it("invokes a Lambda function with an unhandled function error", function()
       local res = assert(proxy_client:send {
         method  = "GET",
@@ -853,7 +840,6 @@ for _, strategy in helpers.each_strategy() do
       assert.is_string(res.headers["X-Kong-Response-Latency"])
       assert.is_string(res.headers["Date"])
     end)
-    
     it("returns server tokens with Via header", function()
       local res = assert(proxy_client:send {
         method  = "GET",
@@ -864,7 +850,6 @@ for _, strategy in helpers.each_strategy() do
       })
       assert.res_status(201, res)
     end)
-    
     it("returns Content-Length header", function()
       local res = assert(proxy_client:send {
         method  = "GET",
@@ -873,10 +858,8 @@ for _, strategy in helpers.each_strategy() do
           ["Host"] = "lambda.com"
         }
       })
-
       assert.equal(173, tonumber(res.headers["Content-Length"]))
     end)
-    
     it("errors on bad region name (DNS resolution)", function()
       local res = assert(proxy_client:send {
         method  = "GET",
@@ -886,7 +869,6 @@ for _, strategy in helpers.each_strategy() do
         }
       })
       assert.res_status(500, res)
-
       helpers.wait_until(function()
         local logs = pl_file.read(TEST_CONF.prefix .. "/" .. TEST_CONF.proxy_error_log)
         local _, count = logs:gsub([[%[ubidots%-aws%-lambda%].+lambda%.ab%-cdef%-1%.amazonaws%.com.+name error"]], "")
